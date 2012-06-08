@@ -1,0 +1,49 @@
+diff -ruN xpdf-3.02/xpdf//XPDFViewer.cc xpdf-3.02-new/xpdf//XPDFViewer.cc
+--- xpdf-3.02/xpdf//XPDFViewer.cc	2012-06-08 14:51:44.000000000 -0400
++++ xpdf-3.02-new/xpdf//XPDFViewer.cc	2010-11-13 00:43:07.000000000 -0500
+@@ -207,6 +207,8 @@
+   { "raise",                   0, gFalse, gFalse, &XPDFViewer::cmdRaise },
+   { "redraw",                  0, gTrue,  gFalse, &XPDFViewer::cmdRedraw },
+   { "reload",                  0, gTrue,  gFalse, &XPDFViewer::cmdReload },
++  { "rotateCCW",               0, gFalse, gFalse, &XPDFViewer::cmdRotateCCW },
++  { "rotateCW",                0, gFalse, gFalse, &XPDFViewer::cmdRotateCW },
+   { "run",                     1, gFalse, gFalse, &XPDFViewer::cmdRun },
+   { "scrollDown",              1, gTrue,  gFalse, &XPDFViewer::cmdScrollDown },
+   { "scrollDownNextPage",      1, gTrue,  gFalse, &XPDFViewer::cmdScrollDownNextPage },
+@@ -1074,6 +1076,24 @@
+   reloadFile();
+ }
+ 
++void XPDFViewer::cmdRotateCCW(GString *args[], int nArgs,
++			   XEvent *event) {
++  int r;
++  r = core->getRotate();
++  r = (r == 0) ? 270 : r - 90;
++  displayPage(core->getPageNum(), core->getZoom(),
++		      r, gTrue, gFalse);
++}
++
++void XPDFViewer::cmdRotateCW(GString *args[], int nArgs,
++			   XEvent *event) {
++  int r;
++  r = core->getRotate();
++  r = (r == 270) ? 0 : r + 90;
++  displayPage(core->getPageNum(), core->getZoom(),
++		      r, gTrue, gFalse);
++}
++
+ void XPDFViewer::cmdRun(GString *args[], int nArgs,
+ 			XEvent *event) {
+   GString *fmt, *cmd, *s;
+diff -ruN xpdf-3.02/xpdf//XPDFViewer.h xpdf-3.02-new/xpdf//XPDFViewer.h
+--- xpdf-3.02/xpdf//XPDFViewer.h	2012-06-08 14:51:22.000000000 -0400
++++ xpdf-3.02-new/xpdf//XPDFViewer.h	2010-11-13 00:33:55.000000000 -0500
+@@ -143,6 +143,8 @@
+   void cmdRaise(GString *args[], int nArgs, XEvent *event);
+   void cmdRedraw(GString *args[], int nArgs, XEvent *event);
+   void cmdReload(GString *args[], int nArgs, XEvent *event);
++  void cmdRotateCCW(GString *args[], int nArgs, XEvent *event);
++  void cmdRotateCW(GString *args[], int nArgs, XEvent *event);
+   void cmdRun(GString *args[], int nArgs, XEvent *event);
+   void cmdScrollDown(GString *args[], int nArgs, XEvent *event);
+   void cmdScrollDownNextPage(GString *args[], int nArgs, XEvent *event);

@@ -1,0 +1,57 @@
+diff -ruN ratpoison-1.4.5/src//events.c ratpoison-1.4.5-new/src//events.c
+--- ratpoison-1.4.5/src//events.c	2009-07-06 20:45:38.000000000 -0400
++++ ratpoison-1.4.5-new/src//events.c	2012-06-08 13:57:28.000000000 -0400
+@@ -383,6 +383,17 @@
+           PRINT_ERROR (("Non-standard WM_CHANGE_STATE format\n"));
+         }
+     }
++  else if (ev->message_type == _net_wm_state)
++     {
++        if (ev->data.l[1] == _net_wm_fullscreen) 
++        {
++           printf("huuray");
++           if (ev->data.l[0])
++              XChangeProperty(dpy, ev->window, _net_wm_state, XA_ATOM, 32, PropModeReplace, (unsigned char*)&_net_wm_fullscreen, 1);
++           else
++              XChangeProperty(dpy, ev->window, _net_wm_state, XA_ATOM, 32, PropModeReplace, (unsigned char*)0, 0);
++        }
++     }
+ }
+ 
+ static void
+diff -ruN ratpoison-1.4.5/src//globals.c ratpoison-1.4.5-new/src//globals.c
+--- ratpoison-1.4.5/src//globals.c	2012-06-08 13:53:36.000000000 -0400
++++ ratpoison-1.4.5-new/src//globals.c	2012-06-08 13:57:28.000000000 -0400
+@@ -41,6 +41,8 @@
+ Atom wm_delete;
+ Atom wm_take_focus;
+ Atom wm_colormaps;
++Atom _net_wm_state;
++Atom _net_wm_fullscreen;
+ 
+ Atom rp_command;
+ Atom rp_command_request;
+diff -ruN ratpoison-1.4.5/src//globals.h ratpoison-1.4.5-new/src//globals.h
+--- ratpoison-1.4.5/src//globals.h	2012-06-08 13:53:36.000000000 -0400
++++ ratpoison-1.4.5-new/src//globals.h	2012-06-08 13:57:28.000000000 -0400
+@@ -130,6 +130,8 @@
+ extern Atom _net_wm_window_type;
+ extern Atom _net_wm_window_type_dialog;
+ extern Atom _net_wm_name;
++extern Atom _net_wm_state;
++extern Atom _net_wm_fullscreen;
+ extern Atom utf8_string;
+ 
+ /* mouse properties */
+diff -ruN ratpoison-1.4.5/src//main.c ratpoison-1.4.5-new/src//main.c
+--- ratpoison-1.4.5/src//main.c	2012-06-08 13:53:36.000000000 -0400
++++ ratpoison-1.4.5-new/src//main.c	2012-06-08 13:57:28.000000000 -0400
+@@ -715,6 +715,8 @@
+   _net_wm_window_type = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
+   _net_wm_window_type_dialog = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
+   _net_wm_name = XInternAtom(dpy, "_NET_WM_NAME", False);
++  _net_wm_state = XInternAtom(dpy, "_NET_WM_STATE", False);
++  _net_wm_fullscreen = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
+   utf8_string = XInternAtom(dpy, "UTF8_STRING", False);
+ 
+   /* Setup signal handlers. */
